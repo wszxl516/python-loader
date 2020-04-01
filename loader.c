@@ -1,12 +1,14 @@
 #include "Python.h"
 #include <locale.h>
 #include "config.h"
+#include "debug.h"
 
 int
 runPython(int argc, char **argv, char *filename, wchar_t *tmp)
 {
 
 
+    if (DEBUG) info("Python %s\n", Py_GetVersion());
     const char *p;
     int i, sts = 1;
     int inspect = 0;
@@ -16,7 +18,7 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp)
     if (argc > 0) {
         argv_copy = PyMem_RawMalloc(sizeof(wchar_t*) * argc);
         if (!argv_copy ){
-            fprintf(stderr, "out of memory\n");
+            error("out of memory\n");
             goto error;
         }
     }
@@ -36,7 +38,7 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp)
 
     oldloc = _PyMem_RawStrdup(setlocale(LC_ALL, NULL));
     if (!oldloc) {
-        fprintf(stderr, "out of memory\n");
+        error("out of memory\n");
         goto error;
     }
 
@@ -44,7 +46,7 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp)
     for (i = 0; i < argc; i++) {
         argv_copy[i] = Py_DecodeLocale(argv[i], NULL);
         if (!argv_copy[i]) {
-            fprintf(stderr, "Unable to decode the command line argument #%i\n",
+            error("Unable to decode the command line argument #%i\n",
                             i + 1);
             argc = i;
             goto error;
@@ -75,20 +77,17 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp)
         wchar_t *home = Py_GetPythonHome();
         wchar_t *program_path = Py_GetProgramFullPath();
         wchar_t *program_name = Py_GetProgramName();
-        printf("\x1b[33msys.path: %s, Path: %ls, Home: %ls, "
-               "program_path: %ls, program_name: %ls\x1b[0m\n", 
-                syspath ,path, home, program_path, program_name);
+        info("sys.path=%s, PythonPath=%ls, PythonHome=%ls , ProgramFullPath=%ls, GetProgramName=%ls", 
+                syspath, path, home, program_path, program_name);
     }
 
-    if (Py_VerboseFlag)
-        fprintf(stderr, "Python %s\n%s\n",
-            Py_GetVersion(), Py_GetCopyright());
+    
     PySys_SetArgv(argc, argv_copy);
 
     FILE *fp=NULL;
     if((fp = fopen(filename, "r"))==NULL)
     {
-        printf("can not open %s\n", filename);;
+        error("can not open %s\n", filename);;
         exit(0);
     }
     PyRun_SimpleFile(fp, filename);
@@ -107,10 +106,4 @@ error:
     return sts;
 }
 
-int main(int argc, char **argv)
-{
-    char *filename="__main__.py";
-    wchar_t *tmp = L"/tmp";
-    runPython(argc, argv, filename, tmp);
-    return 0;
-}
+
