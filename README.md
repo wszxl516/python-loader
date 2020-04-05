@@ -8,8 +8,7 @@ only tested on python3.6
 
 tested on arch & ubuntu & centos7
 
-# build
+# build & run
 
-1. ./build.sh lib
-2. make 
-3. ./loader
+1. make 
+2. ./loader
