@@ -4,7 +4,7 @@
 #include "debug.h"
 
 int
-runPython(int argc, char **argv, char *filename, wchar_t *tmp)
+runPython(int argc, char **argv, char *filename, wchar_t *tmp, wchar_t *path)
 {
 
 
@@ -62,12 +62,13 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp)
 
     if (argc >= 1)
         Py_SetProgramName(argv_copy[0]);
+    Py_SetPythonHome(path);
     Py_Initialize();
-    Py_SetPythonHome(tmp);
-    Py_SetPath(tmp);
+
+    Py_SetPath(path);
     PySys_SetPath(tmp);
 
-    if(DEBUG)
+        if(DEBUG)
     {
 
         PyObject *sys_path = NULL;

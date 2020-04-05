@@ -1,3 +1,3 @@
 #include<stdlib.h>
 
-int runPython(int argc, char **argv, char *filename, wchar_t *tmp);
+int runPython(int argc, char **argv, char *filename, wchar_t *tmp, wchar_t *path);
