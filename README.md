@@ -10,5 +10,6 @@ tested on arch & ubuntu & centos7
 
 # build & run
 
-1. make 
+1. make [use static link]
+2. make shared [use dynamic link]
 2. ./loader

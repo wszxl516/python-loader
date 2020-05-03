@@ -4,7 +4,7 @@
 #include "debug.h"
 
 int
-runPython(int argc, char **argv, char *filename, wchar_t *tmp, wchar_t *path)
+runPython(int argc, char **argv, char *filename, const char *py_path, const char *py_home)
 {
 
 
@@ -52,6 +52,8 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp, wchar_t *path)
             goto error;
         }
     }
+    wchar_t *w_py_path = Py_DecodeLocale(py_path, NULL);
+    wchar_t *w_py_home = Py_DecodeLocale(py_home, NULL);
     setlocale(LC_ALL, oldloc);
     PyMem_RawFree(oldloc);
     oldloc = NULL;
@@ -62,11 +64,10 @@ runPython(int argc, char **argv, char *filename, wchar_t *tmp, wchar_t *path)
 
     if (argc >= 1)
         Py_SetProgramName(argv_copy[0]);
-    Py_SetPythonHome(path);
+    Py_SetPythonHome(w_py_home);
+    Py_SetPath(w_py_path);
     Py_Initialize();
-
-    Py_SetPath(path);
-    PySys_SetPath(tmp);
+    PySys_SetPath(w_py_path);
 
         if(DEBUG)
     {
