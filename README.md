@@ -1,5 +1,5 @@
 # this project is python script  Packing tool
-
+apt install make gcc g++ python3-dev git pkg-config zip unzip zlib1g-dev
 # support python version
 
 only tested on python3.6
